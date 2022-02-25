@@ -5,6 +5,9 @@ inputs:
     required: false
     description: "Perform checkout as first step of action"
     default: true
+  github-token:
+    required: true
+    description: "GitHub Personal Access Token that can checkout the consumer git repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'"
   dry-run:
     required: false
     description: "Whether to run semantic release in `dry-run` mode. It will override the dryRun attribute in your configuration file"
@@ -28,6 +31,11 @@ runs:
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
-    - run: |
-        echo "Release not implemented yet"
-        exit 1
+    - name: Semantic Release
+      id: release
+      uses: cycjimmy/semantic-release-action@v2
+      with:
+        dry_run: ${{ inputs.dry-run }}
+        extra_plugins: ${{ inputs.extra-plugins }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
