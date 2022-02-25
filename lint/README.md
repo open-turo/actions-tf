@@ -8,12 +8,8 @@ GitHub Action runs lint on a GitHub Action
 jobs:
   build:
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Action Lint
-        uses: open-turo/actions-gha/lint@v1
+        uses: open-turo/actions-tf/lint@v1
 ```
 
 Note: by default, this action will perform actions/checkout as its first step.

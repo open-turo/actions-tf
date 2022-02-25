@@ -18,10 +18,6 @@ GitHub Actions for `terraform` repositories
 jobs:
   build:
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Action Lint
         uses: open-turo/actions-tf/lint@v1
 ```
@@ -32,16 +28,9 @@ jobs:
 jobs:
   build:
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: open-turo/actions-tf/release@v1
         with:
-          fetch-depth: 0
-      - name: Action Semantic Release
-        uses: open-turo/actions-tf/release@v1
-        with:
-          dry_run: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### action: [`test`](./test)
@@ -50,8 +39,6 @@ jobs:
 jobs:
   test:
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Test
         uses: open-turo/actions-tf/test@v1
 ```
