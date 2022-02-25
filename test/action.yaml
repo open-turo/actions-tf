@@ -1,0 +1,18 @@
+name: "terraform: Test"
+description: "Tests terraform repository"
+inputs:
+  checkout-repo:
+    required: false
+    description: "Perform checkout as first step of action"
+    default: true
+  github-token:
+    required: true
+    description: "GitHub token passed to coveralls. Usually - 'secrets.GITHUB_TOKEN'. Coveralls uses this token to verify the posted coverage data on the repo and create a new check based on the results. It is built into Github Actions and does not need to be manually specified in your secrets store."
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      if: inputs.checkout-repo
+    - run: |
+        echo "Test not implemented yet"
+        exit 1
