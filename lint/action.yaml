@@ -4,10 +4,13 @@ inputs:
   checkout-repo:
     required: false
     description: "Perform checkout as first step of action"
-    default: true
+    default: "true"
   github-token:
     required: true
-    description: "GitHub token that can create/delete comments. Usually - 'secrets.GITHUB_TOKEN'"
+    description: "GitHub Personal Access Token that can checkout the consumer git repository. e.g. 'secrets.GITHUB_TOKEN'"
+  terraform-cli-credentials-token:
+    required: true
+    description: "The terraform cli config credentials token"
 runs:
   using: composite
   steps:
@@ -15,16 +18,12 @@ runs:
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
+    - uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.1.2
+        cli_config_credentials_token: ${{ inputs.terraform-cli-credentials-token }}
     - uses: wagoid/commitlint-github-action@v4
       if: (github.actor!= 'dependabot[bot]') && (contains(github.head_ref, 'dependabot/github_actions/') == false)
       with:
-        configFile: .commitlintrc.yml
-    - name: Run npm ci if needed
-      if: hashFiles('package-lock.json') != ''
-      shell: bash
-      run: npm ci
-    - uses: KeisukeYamashita/setup-release@v1.0.2
-      with:
-        repository: rhysd/actionlint
-    - uses: actions/setup-python@v2
-    - uses: pre-commit/action@v2.0.0
+        configFile: .commitlintrc.yaml
+    - uses: open-turo/action-pre-commit@v1
