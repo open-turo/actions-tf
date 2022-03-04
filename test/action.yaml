@@ -4,7 +4,7 @@ inputs:
   checkout-repo:
     required: false
     description: "Perform checkout as first step of action"
-    default: true
+    default: "true"
   github-token:
     required: true
     description: "GitHub Personal Access Token that can checkout the consumer git repository. e.g. 'secrets.GITHUB_TOKEN'"
@@ -15,6 +15,16 @@ inputs:
     required: false
     description: "Relative or absolute path to the terraform cli config file"
     default: ./.terraformrc
+  use-terraform-wrapper:
+    required: false
+    description: "Whether or not to use terraform wrapper when setting up terraform"
+    default: "false"
+  aws-access-key-id:
+    required: false
+    description: "Access key id that grants access to AWS services. Requires aws-secret-access-key input as well."
+  aws-secret-access-key:
+    required: false
+    description: "Secret access key that grants access to AWS services. Requires aws-access-key-id input as well."
 
 runs:
   using: composite
@@ -27,6 +37,8 @@ runs:
       with:
         terraform_version: 1.1.2
         cli_config_credentials_token: ${{ inputs.terraform-cli-credentials-token }}
+        # This is needed for terratest to pick terraform outputs correctly
+        terraform_wrapper: ${{ inputs.use-terraform-wrapper }}
     - name: verify test setup file exists
       if: hashFiles('./script/setup') == ''
       shell: bash
@@ -48,4 +60,6 @@ runs:
       shell: bash
       run: ./script/test
       env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
         TF_CLI_CONFIG_FILE: ${{ inputs.terraform-cli-config-file }}
