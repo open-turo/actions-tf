@@ -14,7 +14,8 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
@@ -22,8 +23,5 @@ runs:
       with:
         terraform_version: 1.1.2
         cli_config_credentials_token: ${{ inputs.terraform-cli-credentials-token }}
-    - uses: wagoid/commitlint-github-action@v4
-      if: (github.actor!= 'dependabot[bot]') && (contains(github.head_ref, 'dependabot/github_actions/') == false)
-      with:
-        configFile: .commitlintrc.yaml
-    - uses: open-turo/action-pre-commit@v1
+    - name: Pre-commit
+      uses: open-turo/action-pre-commit@v1

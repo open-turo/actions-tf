@@ -16,8 +16,6 @@ Note: by default, this action will perform actions/checkout as its first step.
 
 ```yaml
 steps:
-  - name: Checkout
-    uses: actions/checkout@v2
   - name: Action Semantic Release
     uses: open-turo/actions-tf/release@v1
     with:
