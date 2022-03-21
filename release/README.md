@@ -16,7 +16,7 @@ Note: by default, this action will perform actions/checkout as its first step.
 
 ```yaml
 steps:
-  - name: Action Semantic Release
+  - name: Action semantic release
     uses: open-turo/actions-tf/release@v1
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}

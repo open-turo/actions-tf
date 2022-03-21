@@ -7,7 +7,7 @@ inputs:
     default: "true"
   github-token:
     required: true
-    description: "GitHub Personal Access Token that can checkout the consumer git repository. e.g. 'secrets.GITHUB_TOKEN'"
+    description: "GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'"
   terraform-cli-credentials-token:
     required: true
     description: "The terraform cli config credentials token"
@@ -29,34 +29,36 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
-    - uses: hashicorp/setup-terraform@v1
+    - name: Setup terraform
+      uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: 1.1.2
         cli_config_credentials_token: ${{ inputs.terraform-cli-credentials-token }}
         # This is needed for terratest to pick terraform outputs correctly
         terraform_wrapper: ${{ inputs.use-terraform-wrapper }}
-    - name: verify test setup file exists
+    - name: Verify test setup file exists
       if: hashFiles('./script/setup') == ''
       shell: bash
       run: |
         echo ./script/setup file is required but missing
         exit 1
-    - name: verify test file exists
+    - name: Verify test file exists
       if: hashFiles('./script/test') == ''
       shell: bash
       run: |
         echo ./script/test file is required but missing
         exit 1
-    - name: setup
+    - name: Setup
       shell: bash
       run: ./script/setup
       env:
         ATLAS_TOKEN: ${{ inputs.terraform-cli-credentials-token }}
-    - name: run tests
+    - name: Run tests
       shell: bash
       run: ./script/test
       env:
