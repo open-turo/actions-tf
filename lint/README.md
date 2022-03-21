@@ -1,6 +1,6 @@
 # GitHub Action Lint
 
-GitHub Action runs lint on a GitHub Action
+GitHub Action runs lint on a terraform based GitHub repository.
 
 ## Usage
 
@@ -8,7 +8,7 @@ GitHub Action runs lint on a GitHub Action
 jobs:
   build:
     steps:
-      - name: Action Lint
+      - name: Action lint
         uses: open-turo/actions-tf/lint@v1
 ```
 

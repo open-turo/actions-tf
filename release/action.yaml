@@ -7,7 +7,7 @@ inputs:
     default: "true"
   github-token:
     required: true
-    description: "GitHub Personal Access Token that can checkout the consumer git repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'"
+    description: "GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'"
   dry-run:
     required: false
     description: "Whether to run semantic release in `dry-run` mode. It will override the dryRun attribute in your configuration file"

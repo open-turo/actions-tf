@@ -1,6 +1,6 @@
 # GitHub Action Test
 
-GitHub Action runs tests appropriate for this action.
+GitHub Action that runs test present within a terraform based GitHub repository.
 
 ## Usage
 
