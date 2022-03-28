@@ -8,7 +8,7 @@
 [![semantic-release][semantic-image]][semantic-url]
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-GitHub Actions for `terraform` repositories
+GitHub Actions for `terraform` based repositories
 
 ## Actions
 
@@ -18,8 +18,11 @@ GitHub Actions for `terraform` repositories
 jobs:
   build:
     steps:
-      - name: Action Lint
+      - name: Lint
         uses: open-turo/actions-tf/lint@v1
+        with:
+          ## example value for terraform-cli-credentials-token provided below
+          terraform-cli-credentials-token: ${{ secrets.TCCT }}
 ```
 
 ### action: [`release`](./release)
@@ -28,8 +31,10 @@ jobs:
 jobs:
   build:
     steps:
-      - uses: open-turo/actions-tf/release@v1
+      - name: Release
+        uses: open-turo/actions-tf/release@v1
         with:
+          ## example value for github-token provided below
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -41,6 +46,9 @@ jobs:
     steps:
       - name: Test
         uses: open-turo/actions-tf/test@v1
+        with:
+          ## example value for terraform-cli-credentials-token provided below
+          terraform-cli-credentials-token: ${{ secrets.TCCT }}
 ```
 
 <!-- Links: -->

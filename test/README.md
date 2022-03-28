@@ -9,16 +9,12 @@ jobs:
   test:
     steps:
       - name: Test
-        uses: open-turo/actions-gha/test@v1
+        uses: open-turo/actions-tf/test@v1
+        with:
+          ## example value for terraform-cli-credentials-token provided below
+          terraform-cli-credentials-token: ${{ secrets.TCCT }}
 ```
 
 Note: by default, this action will perform actions/checkout as its first step.
 
 ## Test
-
-For node based actions, it will run:
-
-```shell
-npm ci
-npm test -- --coverage
-```
