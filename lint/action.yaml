@@ -1,16 +1,13 @@
-name: "terraform Lint"
-description: "Lints terraform repository"
+name: terraform Lint
+description: Lints terraform repository
 inputs:
   checkout-repo:
     required: false
-    description: "Perform checkout as first step of action"
+    description: Perform checkout as first step of action
     default: "true"
-  github-token:
-    required: true
-    description: "GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'"
   terraform-cli-credentials-token:
     required: true
-    description: "The terraform cli config credentials token"
+    description: The terraform cli config credentials token
 runs:
   using: composite
   steps:

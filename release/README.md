@@ -16,9 +16,10 @@ Note: by default, this action will perform actions/checkout as its first step.
 
 ```yaml
 steps:
-  - name: Action semantic release
+  - name: Release
     uses: open-turo/actions-tf/release@v1
     with:
+      ## example value for github-token provided below
       github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -27,34 +28,13 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 
 ### Inputs
 
-| Input Parameter | Required | Description                                                                                                              |
-| :-------------: | :------: | ------------------------------------------------------------------------------------------------------------------------ |
-|     branch      |  false   | The branch on which releases should happen.[[Details](#branch)]<br>Only support for **semantic-release older than v16**. |
-|  extra-plugins  |  false   | Extra plugins for pre-install. [[Details](#extra_plugins)]                                                               |
-|     dry-run     |  false   | Whether to run semantic release in `dry-run` mode. [[Details](#dry_run)]                                                 |
+| Input Parameter | Required | Description                                                                                                             |
+| :-------------: | :------: | ----------------------------------------------------------------------------------------------------------------------- |
+|  github-token   |   true   | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' ] |
+|     dry-run     |  false   | Whether to run semantic release in `dry-run` mode. [[Details](#dry_run)]                                                |
+|  extra-plugins  |  false   | Extra plugins for pre-install. [[Details](#extra_plugins)]                                                              |
 
-#### branch
-
-> {Optional Input Parameter} Similar to parameter `branches`. The branch on which releases should happen.<br>`branch` only supports for **semantic-release older than v16**.
-
-```yaml
-steps:
-  - name: Checkout
-    uses: actions/checkout@v2
-  - name: Semantic Release
-    uses: cycjimmy/semantic-release-action@v2
-    with:
-      semantic_version: 15.13.28
-      # you can set branch for semantic-release older than v16.
-      branch: your-branch
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
-
-It will override the `branch` attribute in your configuration file. If the attribute is not configured on both sides, the default is `master`.
-
-#### extra_plugins
+#### extra-plugins
 
 > {Optional Input Parameter} Extra plugins for pre-install.
 
@@ -66,9 +46,7 @@ Github Action Workflow:
 
 ```yaml
 steps:
-  - name: Checkout
-    uses: actions/checkout@v2
-  - name: Action Semantic Release
+  - name: Release
     uses: open-turo/actions-tf/release@v1
     with:
       # You can specify specifying version range for the extra plugins if you prefer.
@@ -90,23 +68,19 @@ Release Config:
   ]
 ```
 
-#### dry_run
+#### dry-run
 
-> {Optional Input Parameter} Whether to run semantic release in `dry-run` mode.<br>It will override the dryRun attribute in your configuration file.
+> {Optional Input Parameter} Whether to run semantic release in `dry-run` mode.<br>It will override the `dryRun` attribute in your configuration file.
 
 ```yaml
 jobs:
   build:
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Action Semantic Release
+      - name: Release
         uses: open-turo/actions-tf/release@v1
         with:
-          dry-run: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          dry-run: true
 ```
 
 ### Outputs
@@ -124,19 +98,14 @@ jobs:
 jobs:
   build:
     steps:
-      - uses: open-turo/actions-tf/release@v1
+      - name: Release
+        uses: open-turo/actions-tf/release@v1
         id: release # Need an `id` for output variables
         with:
-          fetch-depth: 0
-      - name: Semantic Release
-        uses: open-turo/actions-tf/release@v1
-        id: semantic # Need an `id` for output variables
-        with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Do something when a new release published
         if: steps.release.outputs.new-release-published == 'true'
         run: |
-          echo ${{ steps.semantic.outputs.new-release-version }}
-          echo ${{ steps.semantic.outputs.new-release-major-version }}
+          echo ${{ steps.release.outputs.new-release-version }}
+          echo ${{ steps.release.outputs.new-release-major-version }}
 ```

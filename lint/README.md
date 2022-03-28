@@ -8,8 +8,11 @@ GitHub Action runs lint on a terraform based GitHub repository.
 jobs:
   build:
     steps:
-      - name: Action lint
+      - name: Lint
         uses: open-turo/actions-tf/lint@v1
+        with:
+          ## example value for terraform-cli-credentials-token provided below
+          terraform-cli-credentials-token: ${{ secrets.TCCT }}
 ```
 
 Note: by default, this action will perform actions/checkout as its first step.
@@ -18,8 +21,7 @@ Note: by default, this action will perform actions/checkout as its first step.
 
 This action runs the following lint checks:
 
-- [wagoid/commitlint-github-action](https://github.com/wagoid/commitlint-github-action)
-- [pre-commit/action](https://github.com/pre-commit/action)
+- [action-pre-commit](https://github.com/open-turo/action-pre-commit)
 
 ## Notes
 
