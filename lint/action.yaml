@@ -25,4 +25,4 @@ runs:
         terraform_version: 1.1.2
         cli_config_credentials_token: ${{ inputs.terraform-cli-credentials-token }}
     - name: Pre-commit
-      uses: open-turo/action-pre-commit@v1
+      uses: open-turo/action-pre-commit@use-open-turo-commitlint-config-conventional
