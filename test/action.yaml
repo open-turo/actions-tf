@@ -27,29 +27,25 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       if: inputs.checkout-repo
-      with:
-        fetch-depth: 0
-    - name: Setup terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.1.2
-        cli_config_credentials_token: ${{ inputs.terraform-cli-credentials-token }}
-        ## This is needed for terratest to pick terraform outputs correctly
-        terraform_wrapper: ${{ inputs.use-terraform-wrapper }}
-    - name: Verify test setup file exists
-      if: hashFiles('./script/setup') == ''
+    - name: Setup tools
+      uses: open-turo/action-setup-tools@v1
+    - name: Verify required repository files
       shell: bash
       run: |
-        echo ./script/setup file is required but missing
-        exit 1
-    - name: Verify test file exists
-      if: hashFiles('./script/test') == ''
+        if [[ ! -f ./script/setup ]]; then echo "Missing required file: ./script/setup"; exit 1; fi
+        if [[ ! -f ./script/test ]]; then echo "Missing required file: ./script/test"; exit 1; fi
+    - name: Create credentials
       shell: bash
       run: |
-        echo ./script/test file is required but missing
-        exit 1
+        CREDENTIAL_FILE="$HOME/${{ inputs.terraform-cli-config-file }}"
+        if [[ -f "$CREDENTIAL_FILE" ]]; then
+          echo "Terraform credentials already present, skipping."
+          exit 0
+        fi
+        echo -e "credentials \"app.terraform.io\" {\ntoken = \"${{ inputs.terraform-cli-credentials-token }}\"\n}" > "$CREDENTIAL_FILE"
+        echo "_ACTIONS_TF_TEST_CREDENTIALS=1" >> $GITHUB_ENV
     - name: Setup
       shell: bash
       run: ./script/setup
@@ -62,3 +58,7 @@ runs:
         AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
         TF_CLI_CONFIG_FILE: ${{ inputs.terraform-cli-config-file }}
+    - name: Post run
+      if: always() && env._ACTIONS_TF_TEST_CREDENTIALS
+      shell: bash
+      run: rm "$HOME/${{ inputs.terraform-cli-config-file }}" || true
