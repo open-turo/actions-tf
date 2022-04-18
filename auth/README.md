@@ -1,6 +1,6 @@
-# GitHub Action Test
+# GitHub Action for Authentication with Terraform
 
-GitHub Action that runs test present within a terraform based GitHub repository.
+GitHub Action that creates the Terraform credentials file with a terraform based GitHub repository if it is not already present.
 
 ## Usage
 
@@ -8,8 +8,8 @@ GitHub Action that runs test present within a terraform based GitHub repository.
 jobs:
   test:
     steps:
-      - name: Test
-        uses: open-turo/actions-tf/test@v3
+      - name: Authenticate
+        uses: open-turo/actions-tf/auth@v3
         with:
           ## example value for terraform-cli-credentials-token provided below
           terraform-cli-credentials-token: ${{ secrets.TCCT }}
@@ -17,4 +17,4 @@ jobs:
 
 Note: by default, this action will perform actions/checkout as its first step.
 
-## Test
+## Authenticate

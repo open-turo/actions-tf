@@ -12,10 +12,6 @@ inputs:
     required: false
     description: Relative or absolute path to the terraform cli config file
     default: ./.terraformrc
-  use-terraform-wrapper:
-    required: false
-    description: Whether or not to use terraform wrapper when setting up terraform
-    default: "false"
   aws-access-key-id:
     required: false
     description: Access key id that grants access to AWS services. Requires aws-secret-access-key input as well.
@@ -29,23 +25,20 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
       if: inputs.checkout-repo
+    - name: Create credentials file if missing
+      id: create-credentials-file
+      uses: open-turo/actions-tf/auth@v3
+      with:
+        terraform-cli-credentials-token: ${{ inputs.terraform-cli-credentials-token }}
+        terraform-cli-config-file: ${{ inputs.terraform-cli-config-file }}
     - name: Setup tools
+      # Provide opportunity to install terraform, golang, and others
       uses: open-turo/action-setup-tools@v1
     - name: Verify required repository files
       shell: bash
       run: |
         if [[ ! -f ./script/setup ]]; then echo "Missing required file: ./script/setup"; exit 1; fi
         if [[ ! -f ./script/test ]]; then echo "Missing required file: ./script/test"; exit 1; fi
-    - name: Create credentials
-      shell: bash
-      run: |
-        CREDENTIAL_FILE="$HOME/${{ inputs.terraform-cli-config-file }}"
-        if [[ -f "$CREDENTIAL_FILE" ]]; then
-          echo "Terraform credentials already present, skipping."
-          exit 0
-        fi
-        echo -e "credentials \"app.terraform.io\" {\ntoken = \"${{ inputs.terraform-cli-credentials-token }}\"\n}" > "$CREDENTIAL_FILE"
-        echo "_ACTIONS_TF_TEST_CREDENTIALS=1" >> $GITHUB_ENV
     - name: Setup
       shell: bash
       run: ./script/setup
@@ -59,6 +52,6 @@ runs:
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
         TF_CLI_CONFIG_FILE: ${{ inputs.terraform-cli-config-file }}
     - name: Post run
-      if: always() && env._ACTIONS_TF_TEST_CREDENTIALS
+      if: always() && $ {{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
       shell: bash
       run: rm "$HOME/${{ inputs.terraform-cli-config-file }}" || true
