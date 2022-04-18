@@ -14,6 +14,8 @@ GitHub Actions for `terraform` based repositories
 
 ### action: [`lint`](./lint)
 
+Lint will run pre-commit linters against the repository, optionally checking out, installing the required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools), and creating credentials for Terraform Cloud.
+
 ```yaml
 jobs:
   build:

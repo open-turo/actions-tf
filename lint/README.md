@@ -9,7 +9,7 @@ jobs:
   build:
     steps:
       - name: Lint
-        uses: open-turo/actions-tf/lint@v1
+        uses: open-turo/actions-tf/lint@v3
         with:
           ## example value for terraform-cli-credentials-token provided below
           terraform-cli-credentials-token: ${{ secrets.TCCT }}

@@ -28,11 +28,11 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
-    - name: Semantic release
+    - name: Release
       uses: cycjimmy/semantic-release-action@v2
       with:
         dry_run: ${{ inputs.dry-run }}

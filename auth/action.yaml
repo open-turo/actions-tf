@@ -1,0 +1,30 @@
+name: terraform Authentication
+description: Authenticates with terraform
+inputs:
+  terraform-cli-credentials-token:
+    required: true
+    description: The terraform cli config credentials token
+  terraform-cli-config-file:
+    required: false
+    description: Relative or absolute path to the terraform cli config file
+    default: ./.terraformrc
+outputs:
+  terraform-cli-config-file-created:
+    description: Indicates whether or not this action created the cli config file.
+    value: $ {{ steps.create.outputs.file-created }}
+
+runs:
+  using: composite
+  steps:
+    - name: Create credentials file if missing
+      id: create
+      shell: bash
+      run: |
+        CREDENTIAL_FILE="$HOME/${{ inputs.terraform-cli-config-file }}"
+        if [[ -f "$CREDENTIAL_FILE" ]]; then
+          echo "::set-output name=file-created::false"
+          echo "Terraform credentials already present, skipping."
+          exit 0
+        fi
+        echo -e "credentials \"app.terraform.io\" {\ntoken = \"${{ inputs.terraform-cli-credentials-token }}\"\n}" > "$CREDENTIAL_FILE"
+        echo "::set-output name=file-created::true"
