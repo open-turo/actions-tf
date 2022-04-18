@@ -40,7 +40,7 @@ jobs:
 
 ### action: [`test`](./test)
 
-NOTES: half of time, user of `action-tf` is using golang to test terraform module, this repo mostly likely need a `.go-version` file in the root level
+NOTES: user/repo of `action-tf` is using golang to test terraform module, this user/repo mostly likely need a `.go-version` file in the root level
 
 ```yaml
 jobs:
