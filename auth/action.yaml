@@ -11,7 +11,7 @@ inputs:
 outputs:
   terraform-cli-config-file-created:
     description: Indicates whether or not this action created the cli config file.
-    value: $ {{ steps.create.outputs.file-created }}
+    value: ${{ steps.create.outputs.file-created }}
 
 runs:
   using: composite
