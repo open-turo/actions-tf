@@ -1,5 +1,5 @@
 name: terraform Test
-description: Tests terraform repository
+description: GitHub Action that runs tests present within a Terraform based GitHub repository.
 inputs:
   checkout-repo:
     required: false
@@ -10,8 +10,8 @@ inputs:
     description: The terraform cli config credentials token
   terraform-cli-config-file:
     required: false
-    description: Relative or absolute path to the terraform cli config file
-    default: ./.terraformrc
+    description: Relative path to the terraform cli config file
+    default: .terraformrc
   aws-access-key-id:
     required: false
     description: Access key id that grants access to AWS services. Requires aws-secret-access-key input as well.

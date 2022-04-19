@@ -1,5 +1,5 @@
 name: terraform Action Release & Publish
-description: Publish a new release of the Action - adds a new major tag
+description: GitHub Action that produces a new Release of a Terraform based repository.
 inputs:
   checkout-repo:
     required: false
@@ -7,7 +7,7 @@ inputs:
     default: "true"
   github-token:
     required: true
-    description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
+    description: GitHub token that can checkout the consumer repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
   dry-run:
     required: false
     description: Whether to run semantic release in `dry-run` mode. It will override the dryRun attribute in your configuration file
@@ -31,6 +31,8 @@ runs:
       uses: actions/checkout@v3
       if: inputs.checkout-repo
       with:
+        # Use fetch-depth of zero to obtain all commit history so that semantic versioning can be properly
+        # performed to arrive at the next version number that is to be released.
         fetch-depth: 0
     - name: Setup tools
       uses: open-turo/action-setup-tools@v1

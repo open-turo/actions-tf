@@ -1,4 +1,6 @@
-# actions-tf
+# `open-turo/actions-tf`
+
+GitHub Actions for `terraform` based repositories
 
 [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
 [![Release date][release-date-image]][release-url]
@@ -8,52 +10,47 @@
 [![semantic-release][semantic-image]][semantic-url]
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-GitHub Actions for `terraform` based repositories
-
 ## Actions
 
 ### action: [`lint`](./lint)
 
-Lint will run pre-commit linters against the repository, optionally checking out, installing the required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools), and creating credentials for Terraform Cloud.
+Lint will run pre-commit linters against the consumer repository, optionally checking out, installing the required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools), and creating credentials for Terraform Cloud.
 
-```yaml
-jobs:
-  build:
-    steps:
-      - name: Lint
-        uses: open-turo/actions-tf/lint@v1
-        with:
-          ## example value for terraform-cli-credentials-token provided below
-          terraform-cli-credentials-token: ${{ secrets.TCCT }}
-```
+See usage [here](./lint/README.md#usage).
+
+Documentation is found [here](./lint/README.md).
 
 ### action: [`release`](./release)
 
-```yaml
-jobs:
-  build:
-    steps:
-      - name: Release
-        uses: open-turo/actions-tf/release@v1
-        with:
-          ## example value for github-token provided below
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-```
+Release will optionally checkout the consumer repository and attempt a [Semantic Release](https://semantic-release.gitbook.io/semantic-release/usage/configuration) using the root level configuration file (e.g. `.releaserc.json`) indicating branches and plugins to use to facilitate the release.
+
+See usage [here](./release/README.md#usage).
+
+Documentation is found [here](./release/README.md).
 
 ### action: [`test`](./test)
 
-NOTES: user/repo of `action-tf` is using golang to test terraform module, this user/repo mostly likely need a `.go-version` file in the root level
+Tests the terraform artifacts present in the consumer repository, using golang to perform the tests. `open-turo/action-setup-tools` will be used to install golang, and the version of golang that will be installed is governed by the version present in the `.go-version` file found in the root level of the consumer repository.
 
-```yaml
-jobs:
-  test:
-    steps:
-      - name: Test
-        uses: open-turo/actions-tf/test@v1
-        with:
-          ## example value for terraform-cli-credentials-token provided below
-          terraform-cli-credentials-token: ${{ secrets.TCCT }}
-```
+See usage [here](./test/README.md#usage).
+
+Documentation is found [here](./test/README.md).
+
+### action: [`auth`](./auth)
+
+The `auth` Action is publicly available but is essentially a private Action that will conditionally create the Terraform command line interface configuration file, if it is not found. The file is typically named `.terraformrc`, but is not found under git control since it houses secrets and such. This file is needed for authentication with Terraform at runtime.
+
+See usage [here](./auth/README.md#usage).
+
+Documentation is found [here](./auth/README.md).
+
+## Get Help
+
+Each Action has a detailed README for how to use it as referenced above. Please review Issues, post new Issues against this repository as needed.
+
+## Contributions
+
+Please see [here](https://github.com/open-turo/contributions) for guidelines on how to contribute to this project.
 
 <!-- Links: -->
 
