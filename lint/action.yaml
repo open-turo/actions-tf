@@ -32,6 +32,6 @@ runs:
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
     - name: Post run
-      if: always() && $ {{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
+      if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
       shell: bash
       run: rm "$HOME/${{ inputs.terraform-cli-config-file }}" || true
