@@ -1,6 +1,8 @@
-# GitHub Action for Authentication with Terraform
+# GitHub Action Auth
 
-GitHub Action that creates the Terraform credentials file with a terraform based GitHub repository if it is not already present.
+## Description
+
+GitHub Action that conditionally creates the Terraform command line interface config file that is used to authenticate with Terraform. Created only if not found.
 
 ## Usage
 
@@ -8,13 +10,26 @@ GitHub Action that creates the Terraform credentials file with a terraform based
 jobs:
   test:
     steps:
-      - name: Authenticate
+      - name: Enable terraform authentication
         uses: open-turo/actions-tf/auth@v3
         with:
           ## example value for terraform-cli-credentials-token provided below
           terraform-cli-credentials-token: ${{ secrets.TCCT }}
 ```
 
-Note: by default, this action will perform actions/checkout as its first step.
+## Inputs
 
-## Authenticate
+| parameter                       | description                                    | required | default      |
+| ------------------------------- | ---------------------------------------------- | -------- | ------------ |
+| terraform-cli-credentials-token | The terraform cli config credentials token     | `true`   |              |
+| terraform-cli-config-file       | Relative path to the terraform cli config file | `false`  | .terraformrc |
+
+## Outputs
+
+| parameter                         | description                                                       |
+| --------------------------------- | ----------------------------------------------------------------- |
+| terraform-cli-config-file-created | Indicates whether or not this action created the cli config file. |
+
+## Runs
+
+This action is an `composite` action.

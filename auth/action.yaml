@@ -1,13 +1,15 @@
 name: terraform Authentication
-description: Authenticates with terraform
+description:
+  GitHub Action that conditionally creates the Terraform command line interface config file that
+  is used to authenticate with Terraform. Created only if not found.
 inputs:
   terraform-cli-credentials-token:
     required: true
     description: The terraform cli config credentials token
   terraform-cli-config-file:
     required: false
-    description: Relative or absolute path to the terraform cli config file
-    default: ./.terraformrc
+    description: Relative path to the terraform cli config file
+    default: .terraformrc
 outputs:
   terraform-cli-config-file-created:
     description: Indicates whether or not this action created the cli config file.
