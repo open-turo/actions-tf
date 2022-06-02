@@ -18,6 +18,9 @@ inputs:
   aws-secret-access-key:
     required: false
     description: Secret access key that grants access to AWS services. Requires aws-access-key-id input as well.
+  aux-env-variables-file:
+    required: false
+    description: Relative pathname to file in consumer repository that houses auxiliary environment variable values that must be set in order for this Action to succeed.
 
 runs:
   using: composite
@@ -25,6 +28,12 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
       if: inputs.checkout-repo
+    - name: Auxiliary environment variable inclusion
+      if: hashfiles(inputs.aux-env-variables-file) != ''
+      shell: bash
+      run: |
+        echo "Processing auxiliary environment variables"
+        cat ${{ inputs.aux-env-variables-file }} >> $GITHUB_ENV
     - name: Create credentials file if missing
       id: create-credentials-file
       uses: open-turo/actions-tf/auth@v3
