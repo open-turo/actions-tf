@@ -22,9 +22,17 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Report if true
+      if: inputs.checkout-repo == 'true'
+      shell: bash
+      run: echo "Yes, we are checking out the repo"
+    - name: Report if false
+      if: inputs.checkout-repo == 'false'
+      shell: bash
+      run: echo "No, we are NOT checking out the repo"
     - name: Checkout
       uses: actions/checkout@v3
-      if: inputs.checkout-repo
+      if: inputs.checkout-repo == 'true'
     - name: Create credentials file if missing
       id: create-credentials-file
       uses: open-turo/actions-tf/auth@v3
