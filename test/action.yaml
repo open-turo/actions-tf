@@ -25,6 +25,16 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
       if: inputs.checkout-repo
+    - name: Verify needed scripts exist
+      shell: bash
+      run: |
+        if [[ -x ./script/setup && -x ./script/test ]]; then
+          echo "Needed scripts do exist and are executable"
+        else
+          echo "Needed scripts do NOT exist or are not executable"
+          # Note to subsequent steps that this step failed.
+          exit 1
+        fi
     - name: Create credentials file if missing
       id: create-credentials-file
       uses: open-turo/actions-tf/auth@v3
@@ -34,11 +44,6 @@ runs:
     - name: Setup tools
       # Provide opportunity to install terraform, golang, and others
       uses: open-turo/action-setup-tools@v1
-    - name: Verify required repository files
-      shell: bash
-      run: |
-        if [[ ! -f ./script/setup ]]; then echo "Missing required file: ./script/setup"; exit 1; fi
-        if [[ ! -f ./script/test ]]; then echo "Missing required file: ./script/test"; exit 1; fi
     - name: Setup
       shell: bash
       run: ./script/setup
