@@ -32,7 +32,7 @@ runs:
       # Provide opportunity to install terraform, golang, and others
       uses: open-turo/action-setup-tools@v1
     - name: Pre-commit
-      uses: open-turo/action-pre-commit@v1
+      uses: open-turo/action-pre-commit@b/remove_python_version_file_if_the_action_creates_it
     - name: Post run
       if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
       shell: bash
