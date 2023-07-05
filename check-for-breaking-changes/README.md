@@ -10,7 +10,7 @@ GitHub Action that check the current branch for any breaking change commits base
 jobs:
   test:
     steps:
-      - name: Enable terraform authentication
+      - name: Check for breaking changes
         uses: open-turo/actions-tf/check-for-breaking-changes@v3
 ```
 
