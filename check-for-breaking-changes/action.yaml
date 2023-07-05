@@ -1,0 +1,44 @@
+name: check for breaking changes
+description: GitHub Action that check the current branch for any breaking change commits based on the commit message.
+inputs:
+  checkout-repo:
+    required: false
+    description: Perform checkout as first step of action
+    default: "true"
+  commit-base-ref:
+    required: false
+    description: Commit range to exclude from check
+    default: $GITHUB_BASE_REF
+  commit-head-ref:
+    required: false
+    description: Commit range to include in check
+    default: $GITHUB_HEAD_REF
+  commit-msg-pattern:
+    required: false
+    description: Pattern used to check
+    default: 'BREAKING:\|BREAKING CHANGE:\|BREAKING CHANGES:'
+outputs:
+  contains-breaking-changes:
+    description: Indicates whether or not the action found any breaking changes in the commit range.
+    value: ${{ steps.check.outputs.contains-breaking }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      if: inputs.checkout-repo == 'true'
+      with:
+        fetch-depth: 0
+
+    - name: Check for breaking changes
+      id: check
+      shell: bash
+      run: |
+        commits=$(git log origin/"${{ inputs.commit-base-ref }}"..origin/"${{ inputs.commit-head-ref }}")
+
+        if echo "$commits" | grep -q "${{ inputs.commit-msg-pattern }}"; then
+          echo "contains-breaking=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "contains-breaking=false" >> "$GITHUB_OUTPUT"
+        fi
