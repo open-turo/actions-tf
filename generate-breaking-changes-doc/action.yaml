@@ -1,0 +1,101 @@
+name: generate breaking changes document
+description: GitHub Action that creates a breaking changes document based on the configured template.
+inputs:
+  checkout-repo:
+    required: false
+    description: Perform checkout as first step of action
+    default: "true"
+  github-token:
+    required: true
+    description: GitHub token that can checkout the consumer repository as well push against it. e.g. 'secrets.GITHUB_TOKEN'
+  template-url:
+    required: false
+    description: Breaking changes document template URL
+    default: https://raw.githubusercontent.com/open-turo/standards-terraform/main/templates/breaking-changes-doc-template.md
+  pr-comment:
+    required: false
+    description: Adds a comment to the pull request informing that the breaking changes document was added
+    default: "true"
+  pr-comment-author-name:
+    required: false
+    description: The pull request comment author name
+  pr-comment-author-email:
+    required: false
+    description: The pull request comment author email
+outputs:
+  document-path:
+    description: The relative path to the generated document
+    value: ${{ steps.document.outputs.path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      if: inputs.checkout-repo == 'true'
+      with:
+        fetch-depth: 0
+
+    - name: Get current and next major versions
+      id: versions
+      shell: bash
+      run: |
+        # Get the latest tag, strip the leading `v` if present, and extract the major version
+        current=$(git describe --tags --abbrev=0 | sed 's/^v//' |  grep -oE '^([0-9]+)')
+        next="$((current + 1))"
+
+        echo "current_major=$current" >> "$GITHUB_OUTPUT"
+        echo "next_major=$next" >> "$GITHUB_OUTPUT"
+
+    - name: Generate document
+      id: generate
+      shell: bash
+      run: |
+        CURRENT_MAJOR=${{ steps.versions.outputs.current_major }}
+        NEXT_MAJOR=${{ steps.versions.outputs.next_major }}
+        OUTPUT_FILE=docs/breaking-changes/v"$NEXT_MAJOR".md
+        curl -s ${{ inputs.template-url }} --output "$OUTPUT_FILE"
+
+        sed -i.bak -r "s/[-_*][-_*]CURRENT[-_*][-_*]/${CURRENT_MAJOR}/g" "$OUTPUT_FILE"
+        sed -i.bak -r "s/[-_*][-_*]NEXT[-_*][-_*]/${NEXT_MAJOR}/g" "$OUTPUT_FILE"
+
+        rm -f "$OUTPUT_FILE".bak
+
+        echo "document-path=$OUTPUT_FILE" >> "$GITHUB_OUTPUT"
+
+    - name: Check for changes
+      uses: dorny/paths-filter@v2
+      id: document
+      with:
+        filters: |
+          path: &path
+            - docs/breaking-changes/v${{ steps.versions.outputs.next_major }}.md
+          added:
+            - added: *path
+          modified:
+            - modified: *path
+
+    - name: Push added document
+      if: steps.document.outputs.added == 'true' && inputs.pr-comment == 'true'
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: "docs/breaking-changes/v${{ steps.versions.outputs.next_major }}.md"
+        author_name: ${{ inputs.pr-comment-author-name }}
+        author_email: ${{ inputs.pr-comment-author-email }}
+        message: "fix(documentation): add breaking-changes template for v${{ steps.versions.outputs.next_major }} - automatic"
+        push: origin HEAD:${{ github.head_ref }}
+
+    - name: Notify owner to update document
+      if: steps.document.outputs.added == 'true'
+      uses: unsplash/comment-on-pr@master
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      with:
+        msg: |
+          ## 📄 Breaking change document generated
+
+          **Breaking changes were detected in this pull request**.
+
+          A breaking changes document was generated and pushed to this branch at `docs/breaking-changes/v${{ steps.versions.outputs.next_major }}.md`.
+
+          Please update the document before merging this pull request.
