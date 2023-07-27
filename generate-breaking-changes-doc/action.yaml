@@ -54,14 +54,18 @@ runs:
         CURRENT_MAJOR=${{ steps.versions.outputs.current_major }}
         NEXT_MAJOR=${{ steps.versions.outputs.next_major }}
         OUTPUT_FILE=docs/breaking-changes/v"$NEXT_MAJOR".md
-        curl -s ${{ inputs.template-url }} --output "$OUTPUT_FILE"
-
-        sed -i.bak -r "s/[-_*][-_*]CURRENT[-_*][-_*]/${CURRENT_MAJOR}/g" "$OUTPUT_FILE"
-        sed -i.bak -r "s/[-_*][-_*]NEXT[-_*][-_*]/${NEXT_MAJOR}/g" "$OUTPUT_FILE"
-
-        rm -f "$OUTPUT_FILE".bak
-
-        echo "document-path=$OUTPUT_FILE" >> "$GITHUB_OUTPUT"
+        if [[ -f "$OUTPUT_FILE" ]]; then
+          echo "$OUTPUT_FILE exists, skip generating"
+        else
+          curl -s ${{ inputs.template-url }} --output "$OUTPUT_FILE"
+  
+          sed -i.bak -r "s/[-_*][-_*]CURRENT[-_*][-_*]/${CURRENT_MAJOR}/g" "$OUTPUT_FILE"
+          sed -i.bak -r "s/[-_*][-_*]NEXT[-_*][-_*]/${NEXT_MAJOR}/g" "$OUTPUT_FILE"
+  
+          rm -f "$OUTPUT_FILE".bak
+  
+          echo "document-path=$OUTPUT_FILE" >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Check for changes
       uses: dorny/paths-filter@v2
