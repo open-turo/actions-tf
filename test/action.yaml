@@ -24,7 +24,7 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v3
-      if: inputs.checkout-repo
+      if: inputs.checkout-repo == 'true'
     - name: Create credentials file if missing
       id: create-credentials-file
       uses: open-turo/actions-tf/auth@v3

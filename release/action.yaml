@@ -31,7 +31,7 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v3
-      if: inputs.checkout-repo
+      if: inputs.checkout-repo == 'true'
       with:
         # Use fetch-depth of zero to obtain all commit history so that semantic versioning can be properly
         # performed to arrive at the next version number that is to be released.
