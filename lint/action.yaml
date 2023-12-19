@@ -30,7 +30,7 @@ runs:
         terraform-cli-config-file: ${{ inputs.terraform-cli-config-file }}
     - name: Setup tools
       # Provide opportunity to install terraform, golang, and others
-      uses: open-turo/action-setup-tools@v1
+      uses: open-turo/action-setup-tools@v2
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
     - name: Post run
