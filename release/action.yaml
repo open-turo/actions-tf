@@ -37,7 +37,7 @@ runs:
         # performed to arrive at the next version number that is to be released.
         fetch-depth: 0
     - name: Setup tools
-      uses: open-turo/action-setup-tools@v1
+      uses: open-turo/action-setup-tools@v2
     - name: Release
       uses: cycjimmy/semantic-release-action@v3
       with:
