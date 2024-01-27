@@ -33,6 +33,9 @@ runs:
       uses: open-turo/action-setup-tools@v2
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
+    - name: Check release notes on pull_request
+      if: github.event_name == 'pull_request'
+      uses: open-turo/actions-release/lint-release-notes@v4
     - name: Post run
       if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
       shell: bash
