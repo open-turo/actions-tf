@@ -64,7 +64,7 @@ runs:
         echo "document-path=$OUTPUT_FILE" >> "$GITHUB_OUTPUT"
 
     - name: Check for changes
-      uses: dorny/paths-filter@v2
+      uses: dorny/paths-filter@v3
       id: document
       with:
         filters: |
