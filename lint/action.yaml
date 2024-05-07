@@ -32,7 +32,7 @@ runs:
       # Provide opportunity to install terraform, golang, and others
       uses: open-turo/action-setup-tools@v2
     - name: Pre-commit
-      uses: open-turo/action-pre-commit@v2
+      uses: open-turo/action-pre-commit@v3
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
       uses: open-turo/actions-release/lint-release-notes@v4
