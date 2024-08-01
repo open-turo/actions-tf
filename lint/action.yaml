@@ -12,6 +12,12 @@ inputs:
     required: false
     description: Relative path to the terraform cli config file
     default: .terraformrc
+  s3-bucket-name:
+    required: false
+    description: S3 bucket name to cache dependencies to speed up runs.
+  s3-bucket-region:
+    required: false
+    description: S3 bucket region to cache dependencies to speed up runs.
 runs:
   using: composite
   steps:
@@ -33,6 +39,9 @@ runs:
       uses: open-turo/action-setup-tools@v2
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v3
+      with:
+        s3-bucket-name: ${{ inputs.s3-bucket-name }}
+        s3-bucket-region: ${{ inputs.s3-bucket-region }}
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
       uses: open-turo/actions-release/lint-release-notes@v4
