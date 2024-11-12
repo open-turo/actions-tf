@@ -37,11 +37,39 @@ runs:
     - name: Setup tools
       # Provide opportunity to install terraform, golang, and others
       uses: open-turo/action-setup-tools@v2
+
+    - name: Configure Terraform plugin cache
+      shell: bash
+      run: |
+        echo "TF_PLUGIN_CACHE_DIR=${{ runner.temp }}/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
+        mkdir --parents "${{ runner.temp }}/.terraform.d/plugin-cache"
+    - name: Compute terraform plugin cache key
+      if: inputs.s3-bucket-name != ''
+      id: tf_plugin_cache_key
+      run: |
+        echo "key=terraform-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Load cached terraform plugins if available
+      if: inputs.s3-bucket-name != ''
+      uses: everpcpc/actions-cache@v2
+      id: read_cache
+      with:
+        bucket: ${{ inputs.s3-bucket-name }}
+        use-fallback: false
+        path: ${{ runner.temp }}/.terraform.d/plugin-cache
+        key: ${{ env.cache-name }}-${{ steps.tf_plugin_cache_key.outputs.key }}
+        restore-keys: ${{ env.cache-name }}-
+      env:
+        AWS_REGION: ${{ inputs.s3-bucket-region }}
+        cache-name: ${{ github.event.repository.name }}/cache-tf-plugins
+
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v3
       with:
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
+      env:
+        GODEBUG: asyncpreemptoff=1
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
       uses: open-turo/actions-release/lint-release-notes@v4
