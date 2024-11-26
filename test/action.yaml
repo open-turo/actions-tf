@@ -50,11 +50,17 @@ runs:
       run: |
         echo "TF_PLUGIN_CACHE_DIR=${{ runner.temp }}/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
         mkdir --parents "${{ runner.temp }}.terraform.d/plugin-cache"
+    - name: Check for terraform lockfiles
+      id: check_terraform_lockfiles
+      if: inputs.s3-bucket-name != ''
+      uses: andstor/file-existence-action@v3
+      with:
+        files: "**/.terraform.lock.hcl"
     - name: Compute terraform plugin cache key
       if: inputs.s3-bucket-name != ''
       id: tf_plugin_cache_key
       run: |
-        echo "key=terraform-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}" >> $GITHUB_OUTPUT
+        echo "key=terraform-${{ runner.os }}-${{ steps.check_terraform_lockfiles.outputs.files_exists == 'true' && hashFiles('**/.terraform.lock.hcl') || hashFiles('**/terraform.tf', '**/versions.tf') }}" >> $GITHUB_OUTPUT
       shell: bash
     - name: Load cached terraform plugins if available
       if: inputs.s3-bucket-name != ''
