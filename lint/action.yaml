@@ -47,7 +47,7 @@ runs:
       if: inputs.s3-bucket-name != ''
       id: tf_plugin_cache_key
       run: |
-        echo "key=terraform-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}" >> $GITHUB_OUTPUT
+        echo "key=terraform-${{ runner.os }}-${{ hashFiles('**/terraform.tf') }}" >> $GITHUB_OUTPUT
       shell: bash
     - name: Load cached terraform plugins if available
       if: inputs.s3-bucket-name != ''
