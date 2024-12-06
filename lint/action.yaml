@@ -78,7 +78,7 @@ runs:
         GODEBUG: asyncpreemptoff=1
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
-      uses: open-turo/actions-release/lint-release-notes@v4
+      uses: open-turo/actions-release/lint-release-notes@v5
     - name: Post run
       if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
       shell: bash
