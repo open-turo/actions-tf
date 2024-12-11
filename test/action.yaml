@@ -80,7 +80,6 @@ runs:
       env:
         AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
-        TF_CLI_CONFIG_FILE: ${{ inputs.terraform-cli-config-file }}
         ATLAS_TOKEN: ${{ inputs.terraform-cli-credentials-token }}
     - name: Post run
       if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}

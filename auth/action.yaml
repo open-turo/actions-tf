@@ -23,6 +23,7 @@ runs:
       shell: bash
       run: |
         CREDENTIAL_FILE="$HOME/${{ inputs.terraform-cli-config-file }}"
+        echo "TF_CLI_CONFIG_FILE=$CREDENTIAL_FILE" >> $GITHUB_ENV
         if [[ -f "$CREDENTIAL_FILE" ]]; then
           echo "file-created=false" >> $GITHUB_OUTPUT
           echo "Terraform credentials already present, skipping."
