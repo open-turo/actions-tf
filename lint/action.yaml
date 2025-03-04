@@ -34,9 +34,9 @@ runs:
       with:
         terraform-cli-credentials-token: ${{ inputs.terraform-cli-credentials-token }}
         terraform-cli-config-file: ${{ inputs.terraform-cli-config-file }}
-    - name: Setup tools
-      # Provide opportunity to install terraform, golang, and others
-      uses: open-turo/action-setup-tools@v2
+    #    - name: Setup tools
+    #      # Provide opportunity to install terraform, golang, and others
+    #      uses: open-turo/action-setup-tools@v2
 
     - name: Configure Terraform plugin cache
       shell: bash
@@ -64,12 +64,18 @@ runs:
         cache-name: ${{ github.event.repository.name }}/cache-tf-plugins
 
     - name: Pre-commit
-      uses: open-turo/action-pre-commit@v3
-      with:
-        s3-bucket-name: ${{ inputs.s3-bucket-name }}
-        s3-bucket-region: ${{ inputs.s3-bucket-region }}
+      run: |
+        devbox run pre-commit run --all-files --verbose
+      shell: bash
       env:
         GODEBUG: asyncpreemptoff=1
+    #    - name: Pre-commit
+    #      uses: open-turo/action-pre-commit@v3
+    #      with:
+    #        s3-bucket-name: ${{ inputs.s3-bucket-name }}
+    #        s3-bucket-region: ${{ inputs.s3-bucket-region }}
+    #      env:
+    #        GODEBUG: asyncpreemptoff=1
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
       uses: open-turo/actions-release/lint-release-notes@v5
