@@ -36,7 +36,7 @@ runs:
         terraform-cli-config-file: ${{ inputs.terraform-cli-config-file }}
     - name: Setup tools
       # Provide opportunity to install terraform, golang, and others
-      uses: open-turo/action-setup-tools@v2
+      uses: open-turo/action-setup-tools@v3
 
     - name: Configure Terraform plugin cache
       shell: bash
