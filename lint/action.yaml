@@ -18,6 +18,10 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache dependencies to speed up runs.
+  lint-release-notes:
+    required: false
+    description: Lint release notes on pull_request event - defaults to true
+    default: "true"
 runs:
   using: composite
   steps:
@@ -71,7 +75,7 @@ runs:
       env:
         GODEBUG: asyncpreemptoff=1
     - name: Check release notes on pull_request
-      if: github.event_name == 'pull_request'
+      if: inputs.lint-release-notes == 'true' && github.event_name == 'pull_request'
       uses: open-turo/actions-release/lint-release-notes@v5
     - name: Post run
       if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
