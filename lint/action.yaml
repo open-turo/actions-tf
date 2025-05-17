@@ -30,7 +30,7 @@ runs:
         fetch-depth: 0
     - name: Create credentials file if missing
       id: create-credentials-file
-      uses: open-turo/actions-tf/auth@v3
+      uses: open-turo/actions-tf/auth@v4
       with:
         terraform-cli-credentials-token: ${{ inputs.terraform-cli-credentials-token }}
         terraform-cli-config-file: ${{ inputs.terraform-cli-config-file }}
