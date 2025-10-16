@@ -167,19 +167,12 @@ runs:
         comment-author: "github-actions[bot]"
         body-includes: "<!-- prerelease comment -->"
 
-    - name: Delete previous release note
-      if: steps.fc-prerelease.outputs.comment-id != ''
-      uses: winterjung/comment@v1
-      with:
-        type: delete
-        comment_id: ${{ steps.fc-prerelease.outputs.comment-id }}
-        token: ${{ inputs.github-token }}
-
-    - name: Upsert build version
+    - name: Create or update build version comment
       if: steps.prerelease.outputs.new-release-published == 'true'
       uses: peter-evans/create-or-update-comment@v4
       with:
         issue-number: ${{ steps.PR.outputs.number }}
+        comment-id: ${{ steps.fc-prerelease.outputs.comment-id }}
         body: |
           <!-- prerelease comment -->
           ## Prerelease build
