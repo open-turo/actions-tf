@@ -34,10 +34,14 @@ runs:
     - name: Check for breaking changes
       id: check
       shell: bash
+      env:
+        COMMIT_BASE_REF: ${{ inputs.commit-base-ref }}
+        COMMIT_HEAD_REF: ${{ inputs.commit-head-ref }}
+        COMMIT_MSG_PATTERN: ${{ inputs.commit-msg-pattern }}
       run: |
-        commits=$(git log origin/"${{ inputs.commit-base-ref }}"..origin/"${{ inputs.commit-head-ref }}")
+        commits=$(git log origin/"$COMMIT_BASE_REF"..origin/"$COMMIT_HEAD_REF")
 
-        if echo "$commits" | grep -q "${{ inputs.commit-msg-pattern }}"; then
+        if echo "$commits" | grep -q "$COMMIT_MSG_PATTERN"; then
           echo "contains-breaking=true" >> "$GITHUB_OUTPUT"
         else
           echo "contains-breaking=false" >> "$GITHUB_OUTPUT"

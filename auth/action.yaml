@@ -21,13 +21,16 @@ runs:
     - name: Create credentials file if missing
       id: create
       shell: bash
+      env:
+        TF_CLI_CONFIG_FILE: ${{ inputs.terraform-cli-config-file }}
+        TF_CLI_CREDENTIALS_TOKEN: ${{ inputs.terraform-cli-credentials-token }}
       run: |
-        CREDENTIAL_FILE="$HOME/${{ inputs.terraform-cli-config-file }}"
+        CREDENTIAL_FILE="$HOME/$TF_CLI_CONFIG_FILE"
         echo "TF_CLI_CONFIG_FILE=$CREDENTIAL_FILE" >> $GITHUB_ENV
         if [[ -f "$CREDENTIAL_FILE" ]]; then
           echo "file-created=false" >> $GITHUB_OUTPUT
           echo "Terraform credentials already present, skipping."
           exit 0
         fi
-        echo -e "credentials \"app.terraform.io\" {\ntoken = \"${{ inputs.terraform-cli-credentials-token }}\"\n}" > "$CREDENTIAL_FILE"
+        echo -e "credentials \"app.terraform.io\" {\ntoken = \"$TF_CLI_CREDENTIALS_TOKEN\"\n}" > "$CREDENTIAL_FILE"
         echo "file-created=true" >> $GITHUB_OUTPUT
