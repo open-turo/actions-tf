@@ -76,4 +76,6 @@ runs:
     - name: Post run
       if: always() && ${{ steps.create-credentials-file.outputs.terraform-cli-config-file-created }}
       shell: bash
-      run: rm "$HOME/${{ inputs.terraform-cli-config-file }}" || true
+      env:
+        TF_CLI_CONFIG_FILE: ${{ inputs.terraform-cli-config-file }}
+      run: rm "$HOME/$TF_CLI_CONFIG_FILE" || true
